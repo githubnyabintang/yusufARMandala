@@ -1,0 +1,6 @@
+{
+  "name": "yusufAR",
+  "description": "Sebuah aplikasi web sangat sederhana dengan satu tombol 'pindah' untuk memicu scene Unity.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
