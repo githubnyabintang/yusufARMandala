@@ -11,6 +11,8 @@ import QuizScreen from "./components/QuizScreen";
 import QuizResultScreen from "./components/QuizResultScreen";
 import HomeSplashScreen from "./components/HomeSplashScreen";
 import RestartSplashScreen from "./components/RestartSplashScreen";
+import InfoSplashScreen from "./components/InfoSplashScreen";
+import MonumentInfoScreen from "./components/MonumentInfoScreen";
 import { quizData } from "./data/quizData";
 import { preloadSfx, playSfx } from "./utils/sfx";
 
@@ -26,7 +28,7 @@ const collectionImage =
   "https://lh3.googleusercontent.com/aida-public/AB6AXuCF_rUoUFD-5ov5y2r9YokcGAYjGPj3o9rVer2xJ0Eoa1kArDdjrdUJFQDttK4qyINX10hwScX7meIV0sDv0cbVt-Obk7uEMQ9w7HHB6TWnnzOEpKf_10rZwyVzjdmnytjCiTHJzuCPcJ8bQznic40CRfpX2NpbQAVb2IdE_CpZ3ChK9tbPp-zvV6Lgfc-DhD2pMzXcdyBLxxQcwWlFn-43R4P8JaTrhou_jeRisTLOksQ-FHBYmk6aHOwhcWWPEwSvcA8eZAxwUA8x";
 
 export default function App() {
-  const [currentView, setCurrentView] = useState<'home' | 'splash' | 'quiz' | 'result' | 'home-splash' | 'restart-splash'>('home');
+  const [currentView, setCurrentView] = useState<'home' | 'splash' | 'quiz' | 'result' | 'home-splash' | 'restart-splash' | 'info-splash' | 'info'>('home');
   const [quizScore, setQuizScore] = useState(0);
   const [quizCorrectCount, setQuizCorrectCount] = useState(0);
 
@@ -50,6 +52,11 @@ export default function App() {
     setCurrentView('splash');
   };
 
+  const startInfo = () => {
+    playSfx('click');
+    setCurrentView('info-splash');
+  };
+
   const handleQuizFinish = (score: number, correctCount: number) => {
     setQuizScore(score);
     setQuizCorrectCount(correctCount);
@@ -68,6 +75,14 @@ export default function App() {
 
   if (currentView === 'home-splash') {
     return <HomeSplashScreen onComplete={() => setCurrentView('home')} />;
+  }
+
+  if (currentView === 'info-splash') {
+    return <InfoSplashScreen onComplete={() => setCurrentView('info')} />;
+  }
+
+  if (currentView === 'info') {
+    return <MonumentInfoScreen onBack={handleHome} />;
   }
 
   if (currentView === 'restart-splash') {
@@ -165,6 +180,7 @@ export default function App() {
 
           <button
             type="button"
+            onClick={startInfo}
             className="group flex w-full items-center justify-between p-5 text-[#001128] transition-colors duration-300 hover:bg-[#f8faff] active:scale-[0.99]"
           >
             <div className="flex items-center gap-4 text-left">
