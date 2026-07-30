@@ -51,6 +51,36 @@ export default function QuizResultScreen({
   onRestart,
 }: QuizResultScreenProps) {
   const isHighscore = score >= 70;
+  const resultCopy =
+    score === 100
+      ? {
+          title: 'SELAMAT!',
+          message: 'Kamu menjawab semua pertanyaan dengan benar.',
+          badgeClass: 'bg-green-50 text-green-700 ring-green-200',
+        }
+      : score >= 90
+      ? {
+          title: 'HAMPIR SEMPURNA!',
+          message: 'Pemahamanmu sangat kuat, tinggal sedikit lagi.',
+          badgeClass: 'bg-yellow-50 text-yellow-700 ring-yellow-200',
+        }
+      : score >= 70
+      ? {
+          title: 'HEBAT!',
+          message: 'Kamu sudah memahami sebagian besar materi.',
+          badgeClass: 'bg-[#edf5ff] text-[#1f5fa7] ring-[#b9d8ff]',
+        }
+      : score >= 50
+      ? {
+          title: 'CUKUP BAIK!',
+          message: 'Dasarmu sudah ada, ayo perkuat lagi.',
+          badgeClass: 'bg-sky-50 text-sky-700 ring-sky-200',
+        }
+      : {
+          title: 'SEMANGAT!',
+          message: 'Coba ulangi kuis untuk mengenal materinya lebih dalam.',
+          badgeClass: 'bg-slate-50 text-slate-700 ring-slate-200',
+        };
   const [displayScore, setDisplayScore] = useState(0);
   const [showCard, setShowCard] = useState(false);
   const [showEmoji, setShowEmoji] = useState(false);
@@ -90,9 +120,6 @@ export default function QuizResultScreen({
     }, 40);
     return () => clearInterval(interval);
   }, [score, showEmoji]);
-
-  const gradeEmoji = score >= 90 ? '🏆' : score >= 70 ? '🌟' : score >= 50 ? '💪' : '📚';
-  const gradeText = score >= 90 ? 'SEMPURNA!' : score >= 70 ? 'HEBAT!' : score >= 50 ? 'BAGUS!' : 'SEMANGAT!';
 
   return (
     <div className="relative flex min-h-[100dvh] w-full flex-col bg-[#ffffff] text-[#0b1c2f] antialiased overflow-hidden selection:bg-[#7ab0fd]/30 font-['Plus_Jakarta_Sans',system-ui,sans-serif]">
@@ -139,17 +166,13 @@ export default function QuizResultScreen({
             )}
           </div>
 
-          {/* Grade Badge */}
-          <div
-            className={`mb-3 flex items-center gap-2 transition-all duration-500 ${
-              showEmoji ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-4 opacity-0 scale-75'
+          <p
+            className={`mb-2 text-[12px] font-bold uppercase tracking-[0.18em] text-[#8ba3c6] transition-all duration-500 ${
+              showEmoji ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
             }`}
           >
-            <span className="text-3xl">{gradeEmoji}</span>
-            <span className={`text-sm font-extrabold tracking-widest ${isHighscore ? 'text-yellow-600' : 'text-[#1f5fa7]'}`}>
-              {gradeText}
-            </span>
-          </div>
+            Skor Akhir
+          </p>
 
           {/* Animated Score */}
           <div
@@ -157,10 +180,21 @@ export default function QuizResultScreen({
               showEmoji ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
             }`}
           >
-            <h1 className="text-[48px] font-black tracking-tight text-[#001128] tabular-nums">
+            <h1 className="text-[52px] font-black leading-none tracking-tight text-[#001128] tabular-nums">
               {displayScore}
-              <span className="text-[24px] font-bold text-[#8ba3c6]">/100</span>
+              <span className="text-[25px] font-bold text-[#8ba3c6]">/100</span>
             </h1>
+          </div>
+
+          {/* Grade Badge */}
+          <div
+            className={`mb-4 rounded-full px-4 py-2 text-[12px] font-extrabold tracking-[0.14em] ring-1 transition-all duration-500 delay-150 ${
+              resultCopy.badgeClass
+            } ${
+              showEmoji ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-4 opacity-0 scale-95'
+            }`}
+          >
+            {resultCopy.title}
           </div>
 
           {/* XP-like bar */}
@@ -196,9 +230,7 @@ export default function QuizResultScreen({
               showStats ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
             }`}
           >
-            {isHighscore
-              ? 'Luar biasa! Anda telah memahami sejarah Monumen Mandala dengan sangat baik.'
-              : 'Tetap semangat! Anda selalu bisa mencoba lagi untuk hasil yang lebih baik.'}
+            {resultCopy.message}
           </p>
         </div>
 
