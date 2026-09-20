@@ -13,6 +13,8 @@ import HomeSplashScreen from "./components/HomeSplashScreen";
 import RestartSplashScreen from "./components/RestartSplashScreen";
 import InfoSplashScreen from "./components/InfoSplashScreen";
 import MonumentInfoScreen from "./components/MonumentInfoScreen";
+import AdminDashboard from "./components/AdminDashboard";
+import NameInputScreen from "./components/NameInputScreen";
 import { quizData } from "./data/quizData";
 import { preloadSfx, playSfx } from "./utils/sfx";
 
@@ -28,9 +30,15 @@ const collectionImage =
   "https://lh3.googleusercontent.com/aida-public/AB6AXuCF_rUoUFD-5ov5y2r9YokcGAYjGPj3o9rVer2xJ0Eoa1kArDdjrdUJFQDttK4qyINX10hwScX7meIV0sDv0cbVt-Obk7uEMQ9w7HHB6TWnnzOEpKf_10rZwyVzjdmnytjCiTHJzuCPcJ8bQznic40CRfpX2NpbQAVb2IdE_CpZ3ChK9tbPp-zvV6Lgfc-DhD2pMzXcdyBLxxQcwWlFn-43R4P8JaTrhou_jeRisTLOksQ-FHBYmk6aHOwhcWWPEwSvcA8eZAxwUA8x";
 
 export default function App() {
-  const [currentView, setCurrentView] = useState<'home' | 'splash' | 'quiz' | 'result' | 'home-splash' | 'restart-splash' | 'info-splash' | 'info'>('home');
+  const [currentView, setCurrentView] = useState<'home' | 'splash' | 'quiz' | 'result' | 'home-splash' | 'restart-splash' | 'info-splash' | 'info' | 'admin' | 'name-input'>('name-input');
   const [quizScore, setQuizScore] = useState(0);
   const [quizCorrectCount, setQuizCorrectCount] = useState(0);
+
+  useEffect(() => {
+    if (window.location.pathname === '/admin' || window.location.search.includes('admin=true')) {
+      setCurrentView('admin');
+    }
+  }, []);
 
   useEffect(() => {
     preloadSfx();
@@ -72,6 +80,14 @@ export default function App() {
     playSfx('click');
     setCurrentView('restart-splash');
   };
+
+  if (currentView === 'admin') {
+    return <AdminDashboard />;
+  }
+
+  if (currentView === 'name-input') {
+    return <NameInputScreen onSubmit={() => setCurrentView('home')} />;
+  }
 
   if (currentView === 'home-splash') {
     return <HomeSplashScreen onComplete={() => setCurrentView('home')} />;

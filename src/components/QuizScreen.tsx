@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { ArrowLeft, ArrowRight, CheckCircle, XCircle } from 'lucide-react';
 import { quizData } from '../data/quizData';
 import { playSfx } from '../utils/sfx';
@@ -75,8 +75,13 @@ export default function QuizScreen({ onFinish, onBack }: QuizScreenProps) {
   const [modalEnter, setModalEnter] = useState(false);
   const [questionAnim, setQuestionAnim] = useState<'enter' | 'exit' | 'idle'>('enter');
 
-  const question = quizData[currentIndex];
-  const progressPercent = ((currentIndex + 1) / quizData.length) * 100;
+  // Mengacak soal setiap kali kuis dimulai
+  const activeQuiz = useMemo(() => {
+    return [...quizData].sort(() => Math.random() - 0.5);
+  }, []);
+
+  const question = activeQuiz[currentIndex];
+  const progressPercent = ((currentIndex + 1) / activeQuiz.length) * 100;
   const isCorrect = selectedOption === question.correctAnswer;
 
   // Trigger modal entrance animation
@@ -113,7 +118,7 @@ export default function QuizScreen({ onFinish, onBack }: QuizScreenProps) {
     // Animate question exit, then switch
     setQuestionAnim('exit');
     setTimeout(() => {
-      if (currentIndex < quizData.length - 1) {
+      if (currentIndex < activeQuiz.length - 1) {
         setCurrentIndex(i => i + 1);
         setSelectedOption(null);
         setShowFeedback(false);
@@ -143,7 +148,7 @@ export default function QuizScreen({ onFinish, onBack }: QuizScreenProps) {
         {/* Progress */}
         <div className="mt-6">
           <div className="mb-2 flex items-center justify-between">
-            <span className="text-[14px] text-[#44474e]">Pertanyaan {currentIndex + 1} dari {quizData.length}</span>
+            <span className="text-[14px] text-[#44474e]">Pertanyaan {currentIndex + 1} dari {activeQuiz.length}</span>
             <span className="text-[14px] font-semibold text-[#001128]">{Math.round(progressPercent)}%</span>
           </div>
           <div className="h-2 w-full overflow-hidden rounded-full bg-[#d3e4fd]">
@@ -328,7 +333,7 @@ export default function QuizScreen({ onFinish, onBack }: QuizScreenProps) {
                   : 'bg-[#185BA3] hover:bg-[#154a85] shadow-[#185BA3]/25'
               }`}
             >
-              {currentIndex < quizData.length - 1 ? 'Soal Berikutnya' : 'Lihat Hasil'}
+              {currentIndex < activeQuiz.length - 1 ? 'Soal Berikutnya' : 'Lihat Hasil'}
               <ArrowRight className="h-5 w-5" />
             </button>
           </div>
